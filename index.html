@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Being Trained · 规训</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+SC:wght@200;300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body onmousedown="triggerClickFeedback(event)">
+
+<!-- background layers -->
+<canvas id="ink-canvas"></canvas>
+<div id="paper-texture"></div>
+<div id="grain"></div>
+<div id="dark-veil"></div>
+
+<!-- structural chrome -->
+<div class="rule-v left"></div>
+<div class="rule-v right"></div>
+<div class="rule-h top"></div>
+<div class="rule-h bottom"></div>
+<div class="corner tl"></div>
+<div class="corner tr"></div>
+<div class="corner bl"></div>
+<div class="corner br"></div>
+
+<!-- phase label (top-left vertical) -->
+<div class="phase-label" id="phase-label">
+  <span class="zh">未始</span>
+  <span class="en">NULL</span>
+</div>
+
+<!-- seal (top-right) -->
+<div class="seal" id="seal">
+  <div class="meta">
+    <div><b>BEING&nbsp;TRAINED</b> · 规训</div>
+    <div>v. 2026 · 第 <span class="idx">零</span> 章 / CH. <span class="idx-en">00</span></div>
+    <div style="opacity:0.6">PROTOCOL <span class="idx-en2">0</span> / 5</div>
+  </div>
+  <div class="stamp">起</div>
+</div>
+
+<!-- camera status -->
+<div id="cam-status">
+  <span class="dot"></span>
+  <span class="text">OFFLINE · 未开启</span>
+</div>
+
+<!-- bottom-right counter -->
+<div class="counter" id="counter">
+  <div><b><span class="idx">00 / 05</span></b></div>
+  <div>LOAD 载入 · <span class="load">00%</span></div>
+  <span class="bar"></span>
+</div>
+
+<!-- bottom hint (subtle instruction) -->
+<div class="hint" id="hint"></div>
+
+<!-- transition veil -->
+<div id="breath-veil"></div>
+
+<!-- cursor (ink eye) -->
+<canvas id="cursor-trail"></canvas>
+<div id="cursor">
+  <svg viewBox="0 0 64 64">
+    <g class="eye-lashes" stroke="#A63D2A" stroke-width="1" stroke-linecap="round" opacity="0.7">
+      <line x1="20" y1="22" x2="17" y2="14"/>
+      <line x1="26" y1="20" x2="25" y2="11"/>
+      <line x1="32" y1="19" x2="32" y2="9"/>
+      <line x1="38" y1="20" x2="39" y2="11"/>
+      <line x1="44" y1="22" x2="47" y2="14"/>
+    </g>
+    <path class="eye-lid" d="M10,32 Q32,14 54,32 Q32,50 10,32 Z"
+          stroke="#1C1A18" stroke-width="1.1" fill="none" opacity="0.85"/>
+    <circle cx="32" cy="32" r="9" stroke="#1C1A18" stroke-width="1" fill="rgba(184,181,232,0.12)"/>
+    <circle class="eye-pupil" cx="32" cy="32" r="3.2" fill="#A63D2A"/>
+  </svg>
+</div>
+
+<!-- particle / hand canvases -->
+<canvas id="particle-canvas"></canvas>
+<canvas id="hand-canvas"></canvas>
+
+<!-- scroller -->
+<main id="scroller">
+
+  <!-- ═══ PHASE 0 · HOME ═══ -->
+  <section class="section" id="sec-home">
+    <div class="mast">
+      <div class="kanji">
+        <span>规</span>
+        <span>训</span>
+      </div>
+      <div class="en-mark">
+        <em>Being Trained</em>
+        <small>A STUDY IN MUSCLE·MEMORY</small>
+      </div>
+    </div>
+    <div class="enter-block">
+      <div class="prompt">
+        要开始了吗<span class="en">shall we begin</span>
+      </div>
+      <button class="btn-ink" id="btn-enter" onclick="startExperience()">Enter</button>
+    </div>
+  </section>
+
+  <!-- ═══ PHASE 1 · DRIFT ═══ -->
+  <section class="section" id="sec-drift" style="height: 986px; gap: 0px">
+    <div class="protocol-mark">
+      <span class="zh">一 · 漂 流</span>
+      <span class="en">PROTOCOL · I · DRIFT</span>
+      <span class="bar"></span>
+    </div>
+    <div class="koan">
+      <span class="en">— the hand remembers on its own —</span>
+      <span class="zh">手 · 自 会 记 得</span>
+    </div>
+  </section>
+
+  <!-- ═══ PHASE 2 · TOUCH ═══ -->
+  <section class="section" id="sec-touch">
+    <div class="protocol-mark">
+      <span class="zh">二 · 触 碰</span>
+      <span class="en">PROTOCOL · II · TOUCH</span>
+      <span class="bar"></span>
+    </div>
+    <div class="lotus-hitbox">
+      <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ═══ PHASE 3 · ERASURE ═══ -->
+  <section class="section" id="sec-erase">
+    <div class="protocol-mark">
+      <span class="zh">三 · 抹 除</span>
+      <span class="en">PROTOCOL · III · ERASURE</span>
+      <span class="bar"></span>
+    </div>
+    <div id="desktop"></div>
+    <div class="trash-zone"></div>
+  </section>
+
+  <!-- ═══ PHASE 4 · RESIDUE ═══ -->
+  <section class="section" id="sec-residue">
+    <canvas id="trace-canvas" style="width: 1920px; height: 1080px"></canvas>
+    <div class="koan" style="position: relative; transform: none; top: auto; left: auto;">
+      <span class="en">— what the body leaves behind —</span>
+      <span class="zh">残 · 留</span>
+    </div>
+  </section>
+
+  <!-- ═══ PHASE 5 · END ═══ -->
+  <section class="section" id="sec-end">
+    <div class="mast">
+      <div class="kanji">
+        <span style="font-size: 140px">已</span>
+        <span style="font-size: 140px">习</span>
+        <span style="font-size: 140px">得</span>
+      </div>
+      <div class="en-mark">
+        <em>Trained</em>
+        <small>THE CIRCLE CLOSES</small>
+      </div>
+    </div>
+    <div class="enter-block">
+      <div class="prompt">
+        你的手已经学会了<span class="en">— your hands have learned</span>
+      </div>
+      <button class="btn-ink" id="btn-reset" onclick="restartToTop()">Again</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- MediaPipe -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+
+<!-- React + Babel for Tweaks panel -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="engine.js?v=4"></script>
+
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="tweaks.jsx"></script>
+
+</body>
+</html>
